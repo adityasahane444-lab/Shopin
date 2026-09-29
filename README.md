@@ -95,6 +95,3 @@ The repository includes `vercel.json`, a Node 24 pin and a dedicated `DEPLOYMENT
 - Required environment variables: none
 
 See `DEPLOYMENT.md` for the exact GitHub and Vercel steps.
-### Hydration safety
-
-Browser-only session, cart, wishlist, address, profile, and cached-catalog reads are deferred until after the initial React hydration pass. This prevents a saved login session from changing the first client render and causing Next.js hydration mismatch errors.

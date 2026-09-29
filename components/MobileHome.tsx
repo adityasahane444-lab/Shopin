@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import type { LucideIcon } from "lucide-react";
 import {
   ArrowRight,
   ChevronLeft,
@@ -25,17 +26,22 @@ const slides = [
   { image: "/hero-3.svg", kicker: "NEW FINDS", title: "Discover your next favourite", text: "Browse trending products picked for Shopin shoppers.", href: "/shop?sort=rating" },
 ];
 
-const mobileCategories = [
-  ["For You", "", ShoppingBag, "#efeaff"],
-  ["Fashion", "Fashion", Sparkles, "#fff1f6"],
-  ["Mobiles", "Mobiles", Smartphone, "#eaf5ff"],
-  ["Electronics", "Electronics", Tag, "#eef8ef"],
-  ["Beauty", "Beauty", Sparkles, "#fff7e8"],
-  ["Home", "Home", ShieldCheck, "#f4efff"],
-  ["Grocery", "Grocery", ShoppingBag, "#edfff6"],
-  ["Sports", "Sports", Star, "#eef7ff"],
-  ["Appliances", "Appliances", ShieldCheck, "#f4f4f7"],
-  ["Kids", "Kids", Heart, "#fff0ef"],
+const mobileCategories: Array<{
+  label: string;
+  category: string;
+  Icon: LucideIcon;
+  bg: string;
+}> = [
+  { label: "For You", category: "", Icon: ShoppingBag, bg: "#efeaff" },
+  { label: "Fashion", category: "Fashion", Icon: Sparkles, bg: "#fff1f6" },
+  { label: "Mobiles", category: "Mobiles", Icon: Smartphone, bg: "#eaf5ff" },
+  { label: "Electronics", category: "Electronics", Icon: Tag, bg: "#eef8ef" },
+  { label: "Beauty", category: "Beauty", Icon: Sparkles, bg: "#fff7e8" },
+  { label: "Home", category: "Home", Icon: ShieldCheck, bg: "#f4efff" },
+  { label: "Grocery", category: "Grocery", Icon: ShoppingBag, bg: "#edfff6" },
+  { label: "Sports", category: "Sports", Icon: Star, bg: "#eef7ff" },
+  { label: "Appliances", category: "Appliances", Icon: ShieldCheck, bg: "#f4f4f7" },
+  { label: "Kids", category: "Kids", Icon: Heart, bg: "#fff0ef" },
 ];
 
 export default function MobileHome() {
@@ -100,7 +106,7 @@ export default function MobileHome() {
       <div className="mobile-dots" aria-hidden="true">{slides.map((_, i) => <i key={i} className={i === slide ? "active" : ""} />)}</div>
 
       <section className="mobile-category-strip">
-        {mobileCategories.map(([label, category, Icon, bg]) => (
+        {mobileCategories.map(({ label, category, Icon, bg }) => (
           <Link key={label} href={category ? `/shop?category=${encodeURIComponent(category)}` : "/shop"}>
             <span style={{ background: bg }}><Icon size={20} /></span>
             <small>{label}</small>
