@@ -114,6 +114,10 @@ export default function Cart() {
               Proceed to checkout <ArrowRight />
             </Link>
           </aside>
+          <div className="mobile-cart-bar">
+            <div><small>Total</small><b>₹{(cartSubtotal + delivery).toLocaleString("en-IN")}</b></div>
+            <Link href="/checkout" className="btn btn-primary">Proceed to buy <ArrowRight size={16} /></Link>
+          </div>
         </div>
       )}
     </div>

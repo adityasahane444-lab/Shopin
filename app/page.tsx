@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import { useShopin } from "@/components/ShopinProvider";
+import MobileHome from "@/components/MobileHome";
 
 const categoryCards = [
   ["Mobiles", "/original-assets/vivo-y17s-forest-green-4gb-ram-128gb-storage-250x250.webp", "Phones & tablets"],
@@ -25,7 +26,9 @@ const categories = categoryCards;
 export default function Home() {
   const { products } = useShopin();
   return (
-    <div>
+    <>
+      <MobileHome />
+      <div className="desktop-home-content">
       <section className="hero">
         <div className="hero-copy">
           <span className="eyebrow">THE NEW SHOPPING STANDARD</span>
@@ -180,5 +183,6 @@ export default function Home() {
         </div>
       </section>
     </div>
+    </>
   );
 }

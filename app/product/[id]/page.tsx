@@ -159,6 +159,10 @@ export default function ProductPage() {
           </div>
         </section>
       </div>
+      <div className="mobile-product-buybar">
+        <button className="btn btn-secondary" onClick={() => addToCart(p.id, qty)}>Add to cart</button>
+        <button className="btn btn-primary" onClick={() => { addToCart(p.id, qty); router.push("/checkout"); }}>Buy now</button>
+      </div>
       <section className="section">
         <div className="section-head">
           <div>

@@ -16,6 +16,8 @@ import {
   Trash2,
   UserRound,
   X,
+  WalletCards,
+  ChevronRight,
 } from "lucide-react";
 import { useShopin } from "@/components/ShopinProvider";
 import SafeImage from "@/components/SafeImage";
@@ -169,9 +171,49 @@ export default function Profile() {
 
   const wishProducts = products.filter((p) => wishlist.includes(p.id));
 
+  const mobileAccountActions = [
+    ["orders", "Orders", Package, `${orders.filter((o) => o.userId === user.id).length} purchases`],
+    ["wishlist", "Wishlist", Heart, `${wishProducts.length} saved items`],
+    ["addresses", "Saved addresses", MapPin, `${addresses.length} saved`],
+    ["settings", "Profile settings", Settings, "Edit your details"],
+  ] as const;
+
   return (
     <div className="page-shell account-page">
       <div className="breadcrumb">Home / My Account</div>
+      <section className="mobile-account-hub">
+        <div className="mobile-account-greeting">
+          <div className="mobile-account-avatar">{user.avatar ? <img src={user.avatar} alt={user.name} /> : user.name.slice(0, 1).toUpperCase()}</div>
+          <div><small>Hey, {user.name.split(" ")[0]}</small><h1>Welcome to your Shopin account</h1></div>
+          <button onClick={() => setEditingProfile(true)} aria-label="Edit profile"><Pencil size={17} /></button>
+        </div>
+        <div className="mobile-supercoin-card"><div><span>Your Shopin balance</span><b>₹0</b></div><div><span>Shopping points</span><b>0</b></div><WalletCards size={22} /></div>
+        <div className="mobile-account-quick-grid">
+          {mobileAccountActions.map(([key, label, Icon, meta]) => (
+            <button key={key} onClick={() => {
+              if (key === "settings") {
+                setTab("profile");
+                setProfileMsg("");
+                setProfileError(false);
+                setProfileForm({
+                  name: user.name || "",
+                  email: user.email || "",
+                  phone: user.phone || "",
+                  avatar: user.avatar || "",
+                });
+                setEditingProfile(true);
+              } else {
+                setTab(String(key));
+              }
+            }}><span><Icon size={21} /></span><div><b>{label}</b><small>{meta}</small></div><ChevronRight size={16} /></button>
+          ))}
+        </div>
+        <div className="mobile-account-section">
+          <span className="mobile-kicker">SHOPIN HELP</span>
+          <Link href="/deals">Coupons & offers <ChevronRight size={16} /></Link>
+          {user.role === "admin" && <Link href="/admin">Admin panel <ChevronRight size={16} /></Link>}
+        </div>
+      </section>
       <div className="account-layout">
         <aside className="account-nav">
           <div className="account-person">

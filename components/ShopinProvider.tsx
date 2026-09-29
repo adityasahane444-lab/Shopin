@@ -151,44 +151,58 @@ export function ShopinProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    const cached = read<Product[] | null>(PRODUCT_CACHE_KEY, null);
-    const base = cached?.length
-      ? sanitizeProductImages(cached)
-      : sanitizeProductImages(initialShopinCatalog);
-    const storedUsers = read<User[]>(USERS_KEY, defaultUsers);
-    const session = read<User | null>(SESSION_KEY, null);
+    // Hydration safety: defer browser-only localStorage reads until after the
+    // initial React hydration pass. Otherwise a saved session can change the
+    // first client render from "Login" to a user's name before Header hydrates.
+    let raf1 = 0;
+    let raf2 = 0;
+    raf1 = window.requestAnimationFrame(() => {
+      raf2 = window.requestAnimationFrame(() => {
+        const cached = read<Product[] | null>(PRODUCT_CACHE_KEY, null);
+        const base = cached?.length
+          ? sanitizeProductImages(cached)
+          : sanitizeProductImages(initialShopinCatalog);
+        const storedUsers = read<User[]>(USERS_KEY, defaultUsers);
+        const session = read<User | null>(SESSION_KEY, null);
 
-    setProducts(base);
-    setUsers(storedUsers);
-    setOrders(read<Order[]>(ORDERS_KEY, []));
-    setUser(session);
-    setMounted(true);
+        setProducts(base);
+        setUsers(storedUsers);
+        setOrders(read<Order[]>(ORDERS_KEY, []));
+        setUser(session);
+        setMounted(true);
 
-    if (session) {
-      loadUserData(session.id, true);
-    } else {
-      setDataUserId(null);
-      setCart([]);
-      setWishlist([]);
-      setAddresses([]);
-    }
+        if (session) {
+          loadUserData(session.id, true);
+        } else {
+          setDataUserId(null);
+          setCart([]);
+          setWishlist([]);
+          setAddresses([]);
+        }
 
-    if (!cached?.some((p) => p.source === "original-catalog")) {
-      fetch(ORIGINAL_CATALOG_URL, { cache: "no-store" })
-        .then((response) => {
-          if (!response.ok) throw new Error(`Catalog request failed: ${response.status}`);
-          return response.json();
-        })
-        .then((payload) => {
-          const imported = normalizeOriginalCatalog(payload);
-          if (imported.length) {
-            setProducts((current) => sanitizeProductImages([...current, ...imported]));
-          }
-        })
-        .catch(() => {
-          // The store remains fully usable with the bundled catalog when offline.
-        });
-    }
+        if (!cached?.some((p) => p.source === "original-catalog")) {
+          fetch(ORIGINAL_CATALOG_URL, { cache: "no-store" })
+            .then((response) => {
+              if (!response.ok) throw new Error(`Catalog request failed: ${response.status}`);
+              return response.json();
+            })
+            .then((payload) => {
+              const imported = normalizeOriginalCatalog(payload);
+              if (imported.length) {
+                setProducts((current) => sanitizeProductImages([...current, ...imported]));
+              }
+            })
+            .catch(() => {
+              // The store remains fully usable with the bundled catalog when offline.
+            });
+        }
+      });
+    });
+
+    return () => {
+      if (raf1) window.cancelAnimationFrame(raf1);
+      if (raf2) window.cancelAnimationFrame(raf2);
+    };
   }, []);
 
   useEffect(() => {

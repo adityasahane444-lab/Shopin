@@ -14,6 +14,7 @@ import { useMemo, useState } from "react";
 import { useShopin } from "./ShopinProvider";
 import SafeImage from "./SafeImage";
 import { SHOP_CATEGORIES, normalizeCategory } from "@/lib/categories";
+import MobileHeader from "./MobileHeader";
 
 const cats = SHOP_CATEGORIES;
 export default function Header() {
@@ -46,6 +47,7 @@ export default function Header() {
   };
   return (
     <>
+      <MobileHeader />
       <div className="top-strip">
         <div>India's smart shopping destination</div>
         <div className="top-links">

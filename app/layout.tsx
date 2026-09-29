@@ -1,7 +1,9 @@
 import "./globals.css";
+import { Suspense } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ShopinProvider } from "@/components/ShopinProvider";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 export const metadata = {
   title: "Shopin — Smart Shopping",
@@ -16,9 +18,10 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <ShopinProvider>
-          <Header />
-          <main className="site-main">{children}</main>
+          <Suspense fallback={<div className="route-loading" aria-hidden="true" />}><Header /></Suspense>
+          <main className="site-main"><Suspense fallback={<div className="route-loading" aria-hidden="true" />}>{children}</Suspense></main>
           <Footer />
+          <MobileBottomNav />
         </ShopinProvider>
       </body>
     </html>
